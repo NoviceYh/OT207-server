@@ -1,5 +1,6 @@
 package com.alkemy.ong.controller;
 
+import com.alkemy.ong.controller.documentation.CommentaryControllerDoc;
 import com.alkemy.ong.domain.service.ICommentaryService;
 import com.alkemy.ong.domain.util.Url;
 import com.alkemy.ong.dto.CommentaryBodyDTO;
@@ -16,17 +17,19 @@ import java.util.List;
 
 @RestController
 @RequestMapping(Url.COMMENTS_URI)
-public class CommentaryController {
+public class CommentaryController implements CommentaryControllerDoc {
     
     @Autowired
     private ICommentaryService commentaryService;
 
+    @Override
     @GetMapping
     public ResponseEntity<List<CommentaryBodyDTO>> getComments() {
         List<CommentaryBodyDTO> listDto = commentaryService.getCommentaries();
         return ResponseEntity.ok().body(listDto);
     }
 
+    @Override
     @PutMapping("/{id}")
     public ResponseEntity<CommentaryBodyDTO> updateCommentary(@Valid @RequestBody CommentaryBodyDTO dto, BindingResult bindingResult,
                                                               @PathVariable Long id, HttpServletRequest request) {
@@ -36,12 +39,14 @@ public class CommentaryController {
         return new ResponseEntity<>(commentaryService.update(id, dto ,request), HttpStatus.OK);
     }
 
+    @Override
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCommentary(@PathVariable(name = "id") Long id, HttpServletRequest request) {
         commentaryService.deleteById(id, request);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    @Override
     @PostMapping()
     public ResponseEntity<CommentaryDTO> createCommentary(@RequestBody @Valid CommentaryDTO dto, BindingResult result) {
         if (result.hasErrors()) {
@@ -50,7 +55,7 @@ public class CommentaryController {
         return ResponseEntity.ok(commentaryService.save(dto));
     }
 
-
+    @Override
     @GetMapping("/news/{id}")
     public ResponseEntity<?> getCommentaryByPost(@PathVariable Long id) {
         List<CommentaryBodyDTO> list = commentaryService.findAllById(id);

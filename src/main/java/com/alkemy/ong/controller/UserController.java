@@ -2,6 +2,7 @@ package com.alkemy.ong.controller;
 
 import com.alkemy.ong.auth.dto.UserResponseDto;
 import com.alkemy.ong.auth.dto.UserUpdateDto;
+import com.alkemy.ong.controller.documentation.UserControllerDoc;
 import com.alkemy.ong.domain.util.Url;
 import com.alkemy.ong.exception.BadRequestException;
 import com.alkemy.ong.domain.service.IUserService;
@@ -16,17 +17,19 @@ import java.util.List;
 
 @RestController
 @RequestMapping(Url.USER_URI)
-public class UserController {
+public class UserController implements UserControllerDoc {
 
     @Autowired
     private IUserService userService;
 
+    @Override
     @GetMapping("/users")
     public ResponseEntity<List<UserResponseDto>> getAllUsers() {
         List<UserResponseDto> usersDTOs = this.userService.getAllUsers();
         return ResponseEntity.ok().body(usersDTOs);
     }
 
+    @Override
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable(name = "id") Long userId) {
         this.userService.deleteUserById(userId);
@@ -34,6 +37,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    @Override
     @PatchMapping("users/{id}")
     public UserResponseDto updateUser(
             @PathVariable(value = "id") Long userId, @Valid @RequestBody UserUpdateDto userUpdateDto, BindingResult bindingResult) {

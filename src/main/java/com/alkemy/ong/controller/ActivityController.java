@@ -1,5 +1,6 @@
 package com.alkemy.ong.controller;
 
+import com.alkemy.ong.controller.documentation.ActivityControllerDoc;
 import com.alkemy.ong.domain.util.Url;
 import com.alkemy.ong.dto.ActivityDTO;
 import com.alkemy.ong.exception.BadRequestException;
@@ -14,11 +15,12 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping(Url.ACTIVITIES_URI)
-public class ActivityController {
+public class ActivityController implements ActivityControllerDoc {
 
     @Autowired
     private IActivityService activityService;
 
+    @Override
     @PostMapping
     public ResponseEntity<ActivityDTO> createActivity(@Valid @RequestBody ActivityDTO activityDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -28,6 +30,7 @@ public class ActivityController {
         return ResponseEntity.status(HttpStatus.CREATED).body(resultDTO);
     }
 
+    @Override
     @PutMapping("/{id}")
     public ResponseEntity<ActivityDTO> updateActivity(@Valid @RequestBody ActivityDTO activityDTO, BindingResult bindingResult,
                                                       @PathVariable Long id) {

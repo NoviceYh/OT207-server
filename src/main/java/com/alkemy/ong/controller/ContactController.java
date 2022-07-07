@@ -1,5 +1,6 @@
 package com.alkemy.ong.controller;
 
+import com.alkemy.ong.controller.documentation.ContactControllerDoc;
 import com.alkemy.ong.domain.util.Url;
 import com.alkemy.ong.dto.ContactDTO;
 import java.util.List;
@@ -19,11 +20,12 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping(Url.CONTACTS_URI)
-public class ContactController {
+public class ContactController implements ContactControllerDoc {
 
     @Autowired
     private IContactService contactService;
 
+    @Override
     @PostMapping
     public ResponseEntity<ContactDTO> createContact(@Valid @RequestBody ContactDTO dto, BindingResult result) {
         if (result.hasErrors()) {
@@ -33,6 +35,7 @@ public class ContactController {
         return new ResponseEntity<>(contactService.save(dto), HttpStatus.CREATED);
     }
 
+    @Override
     @GetMapping
     public ResponseEntity<List<ContactDTO>> getContacts() {
         List<ContactDTO> listDto = this.contactService.getAll();
