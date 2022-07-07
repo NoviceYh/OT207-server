@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ActivityController.class)
-public class ActivityControllerTests {
+class ActivityControllerTests {
 
     @Autowired
     private MockMvc mockMvc;
@@ -76,5 +76,28 @@ public class ActivityControllerTests {
                 andExpect(status().isForbidden());
     }
 
+    @Test
+    @WithMockUser(username = "admin", roles = {"USER", "ADMIN"})
+    void testCreateCategory() throws Exception {
+        ActivityDTO activityDTO = createDtoEntity();
+
+        given(activityService.save(any(ActivityDTO.class)))
+                .willAnswer((invocation) -> invocation.getArgument(0));
+
+        String activityString = objectMapper.writeValueAsString(activityDTO);
+
+        ResultActions response = mockMvc.perform(post(Url.ACTIVITIES_URI)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(activityString));
+
+        response.andDo(print()).
+                andExpect(status().isCreated())
+                .andExpect(jsonPath("$.name",
+                        is(activityDTO.getName())))
+                .andExpect(jsonPath("$.image",
+                        is(activityDTO.getImage())))
+                .andExpect(jsonPath("$.content",
+                        is(activityDTO.getContent())));
+    }
 
 }
