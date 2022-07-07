@@ -120,4 +120,17 @@ class ActivityControllerTests {
                 .andDo(print());
     }
 
+    @Test
+    @WithMockUser(username = "admin", roles = {"USER", "ADMIN"})
+    void givenInvalidActivityId_whenGetActivityById_thenReturnIsNotFound() throws Exception {
+        long activityId = 99L;
+        given(activityService.update(eq(activityId), any(ActivityDTO.class))).willReturn(null);
+
+        this.mockMvc.perform(put(Url.ACTIVITIES_URI + "/" + activityId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(JsonUtils.objectToJson(null)))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+    }
+
 }
